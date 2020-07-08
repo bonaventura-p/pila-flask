@@ -1,0 +1,34 @@
+#from cwd
+docker build -t flask:latest .
+
+docker run -d -p 5000:5000 flask
+
+docker tag flask gcr.io/lexical-archery-252114/flask:latest
+
+
+gcloud auth login
+#account below from gcloud iam service-accounts list
+gcloud auth activate-service-account 715459479084-compute@developer.gserviceaccount.com   --key-file=/Users/bonaventurapacileo/Documents/IS-DS/VR/keys/gce-keys.json
+
+#the cmd below saves credentials in /Users/bonaventurapacileo/.docker/config.json
+gcloud auth configure-docker
+
+
+docker push gcr.io/lexical-archery-252114/flask:latest
+
+
+#create gce instance from container and run as privileged
+
+#once deployed, app available at External IP:5000
+
+
+gcloud compute instances create flask-pila2
+--image-family ubuntu-minimal-1804-lts
+--image-project ubuntu-os-cloud
+--zone europe-west4-a
+--tags http-server,https-server
+--container-image=gcr.io/lexical-archery-252114/flask
+--container-privileged
+
+
+sudo apt-get update && sudo apt-get install -y git
